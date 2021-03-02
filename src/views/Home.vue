@@ -1,16 +1,16 @@
 <template>
   <div class="home">
-    <Main title="Google Map Searching" />
+    <Map title="Your Location" />
   </div>
 </template>
 
 <script>
-import Main from "@/components/Main.vue";
+import Map from "../components/Map.vue";
 
 export default {
   name: "Home",
   components: {
-    Main
+    Map
   }
 };
 </script>
