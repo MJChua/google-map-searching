@@ -1,5 +1,16 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <Restaurant title="Restaurants Searching" />
   </div>
 </template>
+
+<script>
+import Restaurant from "./restaurant.vue";
+
+export default {
+  name: "About",
+  components: {
+    Restaurant
+  }
+};
+</script>
