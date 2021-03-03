@@ -80,7 +80,6 @@ export default {
       this.isLoading = false;
     },
     resetCenter() {
-      //panTo 滑順移動
       this.map.panTo({ lat: this.center.lat, lng: this.center.lng });
     },
     clearMarkers() {
@@ -96,7 +95,6 @@ export default {
           map: this.map
         });
 
-        // save markers
         this.markers.push(marker);
 
         const infowindow = new window.google.maps.InfoWindow({
@@ -127,7 +125,7 @@ export default {
     letter-spacing .5px
   }
   &__map {
-    width 50%
+    width 100%
     height 650px
   }
 }
