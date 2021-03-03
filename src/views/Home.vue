@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Map title="Your Location" />
+    <Map title="Your Position" />
   </div>
 </template>
 

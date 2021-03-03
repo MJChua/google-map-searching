@@ -56,7 +56,7 @@ export default {
   },
   watch: {
     center() {
-      this.resetMap();
+      this.resetCenter();
       this.setMarker();
     }
   },
@@ -77,11 +77,9 @@ export default {
         fullscreenControl: this.fullscreenControl,
         zoomControl: this.zoomControl
       });
-      setTimeout(() => {
-        this.isLoading = false;
-      }, 100);
+      this.isLoading = false;
     },
-    resetMap() {
+    resetCenter() {
       //panTo 滑順移動
       this.map.panTo({ lat: this.center.lat, lng: this.center.lng });
     },
@@ -90,14 +88,15 @@ export default {
       this.markers = [];
     },
     setMarker() {
-      //clear existing marker
       this.clearMarkers();
 
       this.restaurants.forEach(location => {
         const marker = new window.google.maps.Marker({
-          position: { lat: this.location.lat, lng: this.location.lng },
+          position: { lat: location.lat, lng: location.lng },
           map: this.map
         });
+
+        // save markers
         this.markers.push(marker);
 
         const infowindow = new window.google.maps.InfoWindow({
@@ -128,7 +127,7 @@ export default {
     letter-spacing .5px
   }
   &__map {
-    width 100%
+    width 50%
     height 650px
   }
 }
