@@ -22,8 +22,8 @@ export default {
     return {
       map: null,
       marker: null,
-      lat: 25.0325917,
-      lng: 121.5624999,
+      lat: 24.9792537,
+      lng: 121.4447555,
       isLoading: false
     };
   },
@@ -33,14 +33,11 @@ export default {
   methods: {
     initMap() {
       this.isLoading = true;
+      // 取得目前位置
       navigator.geolocation.getCurrentPosition(position => {
-        if (position) {
-          console.log(position);
-          this.lat = position.coords.latitude;
-          this.lng = position.coords.longitude;
-        } else {
-          alert("Position Is Available");
-        }
+        console.log(position.coords);
+        this.lat = position.coords.latitude;
+        this.lng = position.coords.longitude;
 
         this.map = new window.google.maps.Map(document.getElementById("map"), {
           center: { lat: this.lat, lng: this.lng },
@@ -50,10 +47,12 @@ export default {
           streetViewControl: true, //街景小人
           mapTypeControl: true //切換地圖樣式
         });
+
         this.marker = new window.google.maps.Marker({
           position: { lat: this.lat, lng: this.lng },
           map: this.map
         });
+
         this.isLoading = false;
       });
     }

@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <Restaurant title="Restaurants Searching" />
+    <Restaurant title="Restaurants Location" />
   </div>
 </template>
 
