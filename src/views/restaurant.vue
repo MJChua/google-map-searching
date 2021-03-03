@@ -1,48 +1,47 @@
 <template>
   <div class="content">
     <h4 class="content-title">{{ title }}</h4>
-    <div class="content-top">
-      <div class="content-top__card">
-        <form class="card-content" @submit.prevent="geocode">
-          <h5 class="center">餐廳資訊</h5>
-          <div class="row">
-            <div class="input-field col s12">
-              <label for="name">餐廳名稱</label>
-              <input type="text" id="name" v-model="restaurant.name" />
-            </div>
-            <div class="input-field col s12">
-              <label for="address">餐廳地址</label>
-              <input type="text" id="address" v-model="restaurant.address" />
-            </div>
-
-            <p v-if="errormsg" class="center red-text">{{ errormsg }}</p>
-            <div class="input-field col s12 center">
-              <button type="submit" class="btn waves-light waves-effect">
-                submit
-              </button>
-            </div>
+    <div class="content-top__section">
+      <form class="card-content" @submit.prevent="geocode">
+        <h4 class="card-title">餐廳資訊</h4>
+        <div class="row">
+          <div class="input-field">
+            <label for="name">餐廳名稱</label>
+            <input type="text" id="name" v-model="restaurant.name" />
           </div>
-        </form>
-      </div>
+          <div class="input-field">
+            <label for="address">餐廳地址</label>
+            <input type="text" id="address" v-model="restaurant.address" />
+          </div>
+
+          <p v-if="errormsg" class="center">{{ errormsg }}</p>
+          <div class="input-field">
+            <button type="submit" class="btn">
+              Submit
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
-    <GMap
-      :center="{ lat: restaurant.lat, lng: restaurant.lng }"
-      :restaurants="[restaurant]"
-      :streetViewControl="false"
-      :mapTypeControl="true"
-      :fullscreenControl="true"
-      :zoomControl="true"
-      :type="true"
-    />
-    <div class="content-bot">
-      <div class="card col s6 offset-s3" v-if="hasGeo">
+
+    <div class="content-bot__section">
+      <GMap
+        :center="{ lat: restaurant.lat, lng: restaurant.lng }"
+        :restaurants="[restaurant]"
+        :streetViewControl="false"
+        :mapTypeControl="true"
+        :fullscreenControl="true"
+        :zoomControl="true"
+        class="google-map"
+      />
+      <div class="card" v-if="hasGeo">
         <div class="card-content">
-          <h5 class="center">確認資訊</h5>
+          <h3 class="card-title">確認資訊</h3>
         </div>
         <div class="card-action">
-          <p class="grey-text">餐廳名稱：{{ restaurant.name }}</p>
-          <p class="grey-text">餐廳緯度: {{ restaurant.lat }}</p>
-          <p class="grey-text">餐廳經度: {{ restaurant.lng }}</p>
+          <p>餐廳名稱: {{ restaurant.name }}</p>
+          <p>餐廳緯度: {{ restaurant.lat }}</p>
+          <p>餐廳經度: {{ restaurant.lng }}</p>
         </div>
       </div>
     </div>
@@ -112,15 +111,33 @@ export default {
     font-weight 600
     letter-spacing .5px
   }
-  &-top {
-    margin 30px auto
-    &__card {
-      display flex
-      justify-content center
+  &-top__section {
+    display flex
+    justify-content center
+    margin 0 auto
+    .card {
+      &-title {
+        font-size 20px
+        font-weight 600
+        letter-spacing .5px
+      }
     }
   }
-  &-bot {
+  &-bot__section {
+    width 100%
+    display flex
+    flex-direction row
+    justify-content space-between
     margin 30px auto
+    .google-map {
+      width 100%
+    }
+    .card {
+      width 100%
+      display flex
+      flex-direction column
+      justify-content center
+    }
   }
 }
 </style>
