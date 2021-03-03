@@ -1,12 +1,19 @@
 <template>
   <div class="content">
+    <Loading :active.sync="isLoading" :is-full-page="fullPage" />
     <div id="map" class="content__map"></div>
   </div>
 </template>
 
 <script>
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/vue-loading.css";
+
 export default {
   name: "GMap",
+  components: {
+    Loading
+  },
   props: {
     title: String,
     center: {
@@ -42,7 +49,9 @@ export default {
     return {
       map: null,
       infowindow: null,
-      markers: []
+      markers: [],
+      isLoading: false,
+      fullPage: true
     };
   },
   watch: {
@@ -57,6 +66,7 @@ export default {
   },
   methods: {
     initMap() {
+      this.isLoading = true;
       this.map = new window.google.maps.Map(document.getElementById("map"), {
         center: this.center,
         zoom: this.zoom,
@@ -67,8 +77,12 @@ export default {
         fullscreenControl: this.fullscreenControl,
         zoomControl: this.zoomControl
       });
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 100);
     },
     resetMap() {
+      //panTo 滑順移動
       this.map.panTo({ lat: this.center.lat, lng: this.center.lng });
     },
     clearMarkers() {
