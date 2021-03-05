@@ -1,14 +1,14 @@
 <template>
-  <div class="about">
+  <div class="search">
     <Restaurant title="Restaurants Location" />
   </div>
 </template>
 
 <script>
-import Restaurant from "./restaurant.vue";
+import Restaurant from "./components/restaurant.vue";
 
 export default {
-  name: "About",
+  name: "Search",
   components: {
     Restaurant
   }
