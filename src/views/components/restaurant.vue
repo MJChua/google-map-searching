@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import GMap from "../components/GMap";
+import GMap from "../../components/GMap.vue";
 
 export default {
   name: "Restaurant",

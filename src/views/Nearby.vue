@@ -16,8 +16,9 @@
     <div class="items">
       <div class="item" v-for="place in places" :key="place.id">
         <div class="places-content">
-          <div class="header">{{ place.name }}</div>
           <div class="meta">{{ place.vicinity }}</div>
+          <br />
+          <div class="header">{{ place.name }}</div>
         </div>
       </div>
     </div>
@@ -27,10 +28,10 @@
 <script>
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/vue-loading.css";
-import * as axios from "axios";
+import axios from "axios";
 
 export default {
-  name: "Restaurant-Test",
+  name: "Nearby",
   components: {
     Loading
   },
@@ -38,6 +39,7 @@ export default {
     return {
       lat: 0,
       lng: 0,
+      icon: "",
       type: "",
       radius: "",
       places: [],
@@ -53,25 +55,60 @@ export default {
     locatorBtnPress() {
       this.isLoading = true;
       navigator.geolocation.getCurrentPosition(position => {
-        this.lat = position.coords.latitude;
-        this.lng = position.coords.longitude;
+        if (position) {
+          this.lat = position.coords.latitude;
+          this.lng = position.coords.longitude;
+        } else {
+          alert("Error Position");
+        }
         this.isLoading = false;
       });
     },
     findCloseByBtnPress() {
-      const URL = `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/js?location=${
-        this.lat
-      },${this.lng}&type=${this.type}&radius=${this.radius *
-        1000}&key=[AIzaSyCd6kNCPNNnVZnd45Es3WTY8xfzeYdhUQQ]`;
+      const apiKey = "AIzaSyCd6kNCPNNnVZnd45Es3WTY8xfzeYdhUQQ";
+      const URL = `/search-api?location=${this.lat},${this.lng}&type=${
+        this.type
+      }&radius=${this.radius * 1000}&key=${apiKey}`;
       axios
         .get(URL)
         .then(response => {
+          console.log("data", response.data);
+          this.icon = response.data.results;
           this.places = response.data.results;
           this.addLocationsToGoogleMaps();
         })
         .catch(error => {
-          alert(error.message);
+          console.log(error.message);
         });
+    },
+    addLocationsToGoogleMaps() {
+      const map = new window.google.maps.Map(this.$refs["map"], {
+        zoom: 15,
+        center: { lat: this.lat, lng: this.lng },
+        mapTypeId: window.google.maps.mapTypeId.ROADMAP
+      });
+      this.places.forEach(place => {
+        const lat = place.geometry.location.lat;
+        const lng = place.geometry.location.lng;
+        let marker = new window.google.maps.Marker({
+          position: new window.google.maps.LatLng(lat, lng),
+          map: map
+        });
+        const infowindow = new window.google.maps.event.addListener(
+          marker,
+          "click",
+          () => {
+            infowindow.setContent(
+              `
+            <div class="header">${place.map}
+              <p>${place.vicinity}</p>
+            </div>            
+            `
+            ),
+              infowindow.open(map, marker);
+          }
+        );
+      });
     }
   }
 };
