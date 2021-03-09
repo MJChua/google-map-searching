@@ -65,14 +65,13 @@ export default {
       });
     },
     findCloseByBtnPress() {
-      const apiKey = "AIzaSyCd6kNCPNNnVZnd45Es3WTY8xfzeYdhUQQ";
       const URL = `/search-api?location=${this.lat},${this.lng}&type=${
         this.type
-      }&radius=${this.radius * 1000}&key=${apiKey}`;
+      }&radius=${this.radius *
+        1000}&key=AIzaSyCd6kNCPNNnVZnd45Es3WTY8xfzeYdhUQQ`;
       axios
         .get(URL)
         .then(response => {
-          console.log("data", response.data);
           this.icon = response.data.results;
           this.places = response.data.results;
           this.addLocationsToGoogleMaps();
