@@ -1,24 +1,40 @@
 <template>
   <div class="content">
     <Loading :active.sync="isLoading"></Loading>
-    <input type="text" placeholder="Enter your address" v-model="coordinates" />
-    <button class="btn" @click.prevent="locatorBtnPress">Search</button>
-    <select v-model="type">
-      <option value="restaurant">Restaurant</option>
-    </select>
-    <select v-model="radius">
-      <option value="5">5 KM</option>
-      <option value="10">10 KM</option>
-      <option value="15">15 KM</option>
-      <option value="20">20 KM</option>
-    </select>
-    <button class="btn" @click.prevent="findCloseByBtnPress">Press</button>
-    <div class="items">
-      <div class="item" v-for="place in places" :key="place.id">
-        <div class="places-content">
-          <div class="meta">{{ place.vicinity }}</div>
-          <br />
-          <div class="header">{{ place.name }}</div>
+    <div class="search-section">
+      <div class="search-address">
+        <span class="search-address__location">First - Your Location :</span>
+        <input
+          type="text"
+          placeholder="Enter your address"
+          v-model="coordinates"
+        />
+        <button class="btn" @click.prevent="locatorBtnPress">Search</button>
+      </div>
+      <div class="search-restaurant">
+        <span class="search-restaurant__selector">Second - Choose Type :</span>
+        <select v-model="type">
+          <option value="restaurant">Restaurant</option>
+        </select>
+        <select v-model="radius">
+          <option value="5">5 KM</option>
+          <option value="10">10 KM</option>
+          <option value="15">15 KM</option>
+          <option value="20">20 KM</option>
+        </select>
+        <button class="btn" @click.prevent="findCloseByBtnPress">Press</button>
+      </div>
+    </div>
+
+    <!-- Map Section -->
+    <div class="map-wrapper">
+      <div id="map" class="map-wrapper__main"></div>
+      <div class="map-wrapper__items">
+        <div class="item" v-for="place in places" :key="place.id">
+          <div class="places-content">
+            <div class="places-content__name">{{ place.name }}</div>
+            <div class="places-content__locate">{{ place.vicinity }}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -37,6 +53,8 @@ export default {
   },
   data() {
     return {
+      map: null,
+      infowindow: null,
       lat: 0,
       lng: 0,
       icon: "",
@@ -81,32 +99,30 @@ export default {
         });
     },
     addLocationsToGoogleMaps() {
-      const map = new window.google.maps.Map(this.$refs["map"], {
+      this.map = new window.google.maps.Map(document.getElementById("map"), {
         zoom: 15,
-        center: { lat: this.lat, lng: this.lng },
-        mapTypeId: window.google.maps.mapTypeId.ROADMAP
+        center: { lat: this.lat, lng: this.lng }
       });
       this.places.forEach(place => {
         const lat = place.geometry.location.lat;
         const lng = place.geometry.location.lng;
         let marker = new window.google.maps.Marker({
           position: new window.google.maps.LatLng(lat, lng),
-          map: map
+          map: this.map
         });
-        const infowindow = new window.google.maps.event.addListener(
-          marker,
-          "click",
-          () => {
-            infowindow.setContent(
-              `
-            <div class="header">${place.map}
-              <p>${place.vicinity}</p>
-            </div>            
-            `
-            ),
-              infowindow.open(map, marker);
-          }
-        );
+        const infowindow = new window.google.maps.InfoWindow({
+          content: `
+            <div class="header" style="font-weight: 500">${place.name}</div>
+            <br />
+            <div>${place.vicinity}</div>
+          `,
+          maxWidth: 200
+        });
+        marker.addListener("click", () => {
+          if (this.infowindow) this.infowindow.close();
+          infowindow.open(this.map, marker);
+          this.infowindow = infowindow;
+        });
       });
     }
   }
@@ -116,5 +132,86 @@ export default {
 <style scoped lang="stylus">
 .content {
   margin 50px auto
+  .btn {
+    &:hover {
+      color red
+      background #000
+      transition all .3s ease-in
+    }
+    &:active {
+      color yellow
+    }
+  }
+  .search {
+    &-section {
+      display flex
+      flex-direction row
+      justify-content center
+      margin-bottom 50px
+    }
+    &-address {
+      display flex
+      justify-content space-around
+      margin-right 50px
+      &__location {
+        font-weight 600
+        opacity .7
+      }
+      input {
+        width 200px
+        margin 0 20px
+        text-align center
+      }
+    }
+    &-restaurant {
+      display flex
+      justify-content space-around
+      &__selector {
+        font-weight 600
+        opacity .7
+        margin-right 10px
+      }
+      select {
+        width 90px
+        margin 0 10px
+      }
+      .btn {
+        margin-left 10px
+      }
+    }
+  }
+
+  // Map Section
+  .map-wrapper {
+    display flex
+    flex-direction row
+    justify-content space-between
+    &__main {
+      width 50%
+      height 750px
+    }
+    &__items {
+      width 50%
+      height 700px
+      border 4px solid #f0f0f0
+      padding 20px 5px
+      overflow scroll
+      .item {
+        margin-bottom 20px
+        .places-content {
+          &__name {
+            font-weight 500
+            letter-spacing 1px
+            overflow hidden
+            text-overflow ellipsis
+          }
+          &__locate {
+            letter-spacing 1px
+            opacity .6
+          }
+        }
+      }
+    }
+  }
 }
 </style>
